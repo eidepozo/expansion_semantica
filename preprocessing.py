@@ -1,12 +1,10 @@
 #https://pypi.org/project/Unidecode/
 #https://gist.github.com/j4mie/557354
     
-    
-from unidecode import unidecode
 import re
 
-def preprocessing(texto):
-    textof = texto.lower()
-    textof = re.sub('[^a-zá-úñü]', ' ', textof) # solo letras
-    textof = re.sub(r'\s+', ' ', textof) #sin espacios adicionales (al menos un espacio)
-    return textof
+def preprocessing(text):
+    formatted_text = text.lower()
+    formatted_text = re.sub('[^a-zá-úñü]', ' ', formatted_text) # solo letras
+    formatted_text = re.sub(r'\s+', ' ', formatted_text) #sin espacios adicionales (al menos un espacio)
+    return formatted_text

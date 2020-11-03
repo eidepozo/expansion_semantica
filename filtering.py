@@ -12,5 +12,5 @@ def filtering(data, nickname, maxq):
 
     # operaciones comunes
     filtered_data['snippet'] = filtered_data['snippet'].map(lambda text: BeautifulSoup(text, 'html.parser').get_text())
-    filtered_data = filtered_data['snippet'].drop_duplicates()
+    filtered_data = filtered_data['snippet'].drop_duplicates() # elimino los duplicados
     return filtered_data

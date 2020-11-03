@@ -23,11 +23,10 @@ def challenge_info(challenge_id):
     query = query.replace('id_desafio', str(challenge_id)) 
     conn = pymysql.connect(host='localhost', user='root',
                        passwd='rotted',db='gonsa2')
-    ch_info = pd.read_sql(query, conn) 
-    ch_info = ch_info.values.tolist() #summ, desc, aim
-    flat_ch_info = [item for sublist in ch_info for item in sublist] #posible mejora con pd
+    ch_info = pd.read_sql(query, conn)
+    ch_info = ch_info.iloc[0] # ahora se entrega como una serie, igual que la data filtrada
     conn.close()
-    return flat_ch_info
+    return ch_info
 
 def challenge_students(challenge_id):
     query = "SELECT DISTINCT FK_student_nick FROM Students_query \
