@@ -1,11 +1,15 @@
 from preprocessing import preprocessing
-import nltk
 from nltk.corpus import stopwords
+from nltk import sent_tokenize, word_tokenize
 
-def formatted(filtered_data): # ahora se considera cada snippet por separado
-    preprocessed_data = filtered_data.apply(preprocessing)
-    formatted_data = preprocessed_data.tolist()
-    all_words = [nltk.word_tokenize(snippet) for snippet in formatted_data]
+def formatted(filtered_data, sentences): # ahora snippet completo o por sentencia
+    filtered_data = filtered_data.tolist()
+    if sentences:
+        filtered_data = [sent_tokenize(paragraph, language='spanish') for paragraph in filtered_data]
+        filtered_data = [item for sublist in filtered_data for item in sublist] #flat
+        
+    preprocessed_data = [preprocessing(snippet) for snippet in filtered_data]
+    all_words = [word_tokenize(snippet) for snippet in preprocessed_data]
     
     es_sw = stopwords.words('spanish')
     es_sw.extend(['si', 'asi', 'ser', 'tener', 'mas']) 
