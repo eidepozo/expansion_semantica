@@ -1,5 +1,8 @@
 # recomendacion_de_terminos
 
+03-11-20
+- Solo se permite la entrega como articulos independientes, la concatenación puede producir conexiones ilogicas de similaridad segun la proximidad que se escoja. 
+
 02-11-20
-Se sube la sistematización realizada junto a una serie de mejoras para la creación flexible de modelos. Queda pendiente 
+- Se sube la sistematización realizada junto a una serie de mejoras para la creación flexible de modelos. Queda pendiente 
 permitir la entrega como articulos o corpus al modelo (actualmente solo como corpus). Ademas de evaluar los parametros propiamente tales del modelo.
