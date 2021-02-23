@@ -7,7 +7,7 @@ def formatted(filtered_data, sentences): # ahora snippet completo o por sentenci
     if sentences:
         filtered_data = [sent_tokenize(paragraph, language='spanish') for paragraph in filtered_data]
         filtered_data = [item for sublist in filtered_data for item in sublist] #flat
-        
+    
     preprocessed_data = [preprocessing(snippet) for snippet in filtered_data]
     all_words = [word_tokenize(snippet) for snippet in preprocessed_data]
     
@@ -16,4 +16,5 @@ def formatted(filtered_data, sentences): # ahora snippet completo o por sentenci
     en_sw = stopwords.words('english') 
     for i in range(len(all_words)):
         all_words[i] = [w for w in all_words[i] if w not in es_sw and w not in en_sw]
+    all_words = [w for w in all_words if w] # filtro para listas vacias
     return all_words
