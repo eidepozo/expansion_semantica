@@ -1,6 +1,9 @@
 from sklearn.metrics.pairwise import linear_kernel
 import numpy as np
 from collections import OrderedDict, Counter
+from bing_search import bing_search_alt
+from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.corpus import stopwords
 
 def group_matrix(df, tf):
     S = [sim_matrix(tf, row[0], row[1], row[2], row[3]) for row in df[['query', 'snippet1', 'snippet2', 'snippet3']].values]
@@ -32,6 +35,33 @@ def MMR_score(S, docs=[1,2,3], lambda_=0.5):
         selected[next_selected] = result[next_selected]
     return selected
 
-def sum_cos(df, S):
-    
+
+def sum_cos_df(model,df,user_id): # dataframe de palabra incluida, similaridad y sum_cos
+    #vocab = list(model.wv.vocab)
+    size = len(list(model.wv.vocab)) #673
+    q = df.iloc[user_id][1] # query original
+    try:
+        all_sims=(model.wv.most_similar([q.split()[-1]], topn=size))
+    except KeyError:
+        print("Esta palabra no aparece en el modelo")
+    sum_cos = sum_cos_array(size,all_sims, q)
+    sdf = pd.DataFrame(sum_cos, columns=['sum_cos'])
+    wadf = pd.DataFrame([i[0] for i in all_sims], columns=['word_added'])
+    prdf = pd.DataFrame([i[1] for i in all_sims], columns=['similarity_w'])
+    df2 = pd.concat([wadf, prdf, sdf], axis=1)
+    return df2
+
+def sum_cos_array(size, all_sims, q): # arreglo de sum_cos, realiza nueva busqueda
+    sum_cos = np.zeros(size)
+    es_sw = stopwords.words('spanish')
+    for i in range(size):
+        #print (i) # contador scrap
+        nq = q + ' '+all_sims[i][0]
+        res = bing_search_alt(nq)
+        tf = TfidfVectorizer(stop_words=es_sw) # no se si es necesario
+        S = np.asarray(sim_matrix(tf, nq, res[0], res[1], res[2]))
+        sum_cos[i] = S[1,2] + S[1,3] + S[2,3]
+    return sum_cos
+
+
     
