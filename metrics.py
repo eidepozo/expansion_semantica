@@ -4,6 +4,7 @@ from collections import OrderedDict, Counter
 from bing_search import bing_search_alt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
+import pandas as pd
 
 def group_matrix(df, tf):
     S = [sim_matrix(tf, row[0], row[1], row[2], row[3]) for row in df[['query', 'snippet1', 'snippet2', 'snippet3']].values]
@@ -36,9 +37,9 @@ def MMR_score(S, docs=[1,2,3], lambda_=0.5):
     return selected
 
 
-def sum_cos_df(model,df,user_id): # dataframe de palabra incluida, similaridad y sum_cos
+def sum_cos_df(model,df,user_id, size): # dataframe de palabra incluida, similaridad y sum_cos
     #vocab = list(model.wv.vocab)
-    size = len(list(model.wv.vocab)) #673
+    #size = len(list(model.wv.vocab)) #673
     q = df.iloc[user_id][1] # query original
     try:
         all_sims=(model.wv.most_similar([q.split()[-1]], topn=size))
@@ -59,7 +60,11 @@ def sum_cos_array(size, all_sims, q): # arreglo de sum_cos, realiza nueva busque
         nq = q + ' '+all_sims[i][0]
         res = bing_search_alt(nq)
         tf = TfidfVectorizer(stop_words=es_sw) # no se si es necesario
-        S = np.asarray(sim_matrix(tf, nq, res[0], res[1], res[2]))
+        try: 
+            S = np.asarray(sim_matrix(tf, nq, res[0], res[1], res[2]))
+        except IndexError: # ante insuficientes snippets
+            print ("Palabra N %d : %s" %(i, all_sims[i][0]))
+            return sum_cos # ultimo estado matriz
         sum_cos[i] = S[1,2] + S[1,3] + S[2,3]
     return sum_cos
 
