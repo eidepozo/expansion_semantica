@@ -10,6 +10,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_all_elements_located
 import time
 from selenium.webdriver.support import expected_conditions as EC
+from dateutil.parser import parse
+
+import re
 
 def bing_search(query):
     url = urlunparse(("https", "www.bing.com", "/search", "", urlencode({"q": query}), ""))
@@ -37,5 +40,23 @@ def bing_search_alt(query):
             docs.append(value.text) 
     time.sleep(3)
     driver.close()
-    return docs    
+    docs = [re.sub('[·]', '', d) for d in docs]
+    processed_docs = [d.split(' ', 1)[1].strip() if is_date(d.split()[0]) else d for d in docs]
+    return processed_docs  
+
+#https://stackoverflow.com/questions/25341945/check-if-string-has-date-any-format
+def is_date(string, fuzzy=False):
+    """
+    Return whether the string can be interpreted as a date.
+
+    :param string: str, string to check for date
+    :param fuzzy: bool, ignore unknown tokens in string if True
+    """
+    try: 
+        parse(string, fuzzy=fuzzy)
+        return True
+
+    except ValueError:
+        return False
+
  
