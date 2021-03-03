@@ -45,28 +45,31 @@ def sum_cos_df(model,df,user_id, size): # dataframe de palabra incluida, similar
         all_sims=(model.wv.most_similar([q.split()[-1]], topn=size))
     except KeyError:
         print("Esta palabra no aparece en el modelo")
-    sum_cos = sum_cos_array(size,all_sims, q)
+    nsdf, sum_cos = sum_cos_array(size,all_sims, q)
     sdf = pd.DataFrame(sum_cos, columns=['sum_cos'])
     wadf = pd.DataFrame([i[0] for i in all_sims], columns=['word_added'])
     prdf = pd.DataFrame([i[1] for i in all_sims], columns=['similarity_w'])
-    df2 = pd.concat([wadf, prdf, sdf], axis=1)
+    df2 = pd.concat([wadf,nsdf, prdf, sdf], axis=1)
     return df2
 
 def sum_cos_array(size, all_sims, q): # arreglo de sum_cos, realiza nueva busqueda
     sum_cos = np.zeros(size)
     es_sw = stopwords.words('spanish')
+    nsdf = pd.DataFrame(columns = ['s1','s2','s3'])
     for i in range(size):
         #print (i) # contador scrap
         nq = q + ' '+all_sims[i][0]
         res = bing_search_alt(nq)
+        a_series = pd.Series(res, index = nsdf.columns)
+        nsdf = nsdf.append(a_series, ignore_index=True) # df con nuevos snippets
         tf = TfidfVectorizer(stop_words=es_sw) # no se si es necesario
         try: 
             S = np.asarray(sim_matrix(tf, nq, res[0], res[1], res[2]))
         except IndexError: # ante insuficientes snippets
             print ("Palabra N %d : %s" %(i, all_sims[i][0]))
-            return sum_cos # ultimo estado matriz
+            return nsdf, sum_cos # ultimo estado matriz
         sum_cos[i] = S[1,2] + S[1,3] + S[2,3]
-    return sum_cos
+    return nsdf, sum_cos
 
 
     
