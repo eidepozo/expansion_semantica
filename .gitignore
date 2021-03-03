@@ -1,3 +1,4 @@
 test/
 geckodriver.exe
 geckodriver.log
+query*
