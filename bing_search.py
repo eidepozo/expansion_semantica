@@ -41,7 +41,10 @@ def bing_search_alt(query):
     time.sleep(3)
     driver.close()
     docs = [re.sub('[·]', '', d) for d in docs]
-    processed_docs = [d.split(' ', 1)[1].strip() if is_date(d.split()[0]) else d for d in docs]
+    try:
+        processed_docs = [d.split(' ', 1)[1].strip() if is_date(d.split()[0]) else d for d in docs]
+    except IndexError:
+        print(docs)
     return processed_docs  
 
 #https://stackoverflow.com/questions/25341945/check-if-string-has-date-any-format
