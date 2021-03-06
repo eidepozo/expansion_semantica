@@ -10,6 +10,8 @@ def group_matrix(df, tf):
     S = [sim_matrix(tf, row[0], row[1], row[2], row[3]) for row in df[['query', 'snippet1', 'snippet2', 'snippet3']].values]
     S = np.asarray(S) # casteo como np
     return S
+
+#https://stackoverflow.com/questions/12118720/python-tf-idf-cosine-to-find-document-similarity
     
 def sim_matrix(tf, q, s1, s2, s3):
     # vectorizacion
