@@ -43,7 +43,7 @@ def challenge_students(challenge_id):
     return flat_ch_students
 
 def top_k_queries(challenge_id, k):
-    query = "SELECT query, COUNT(*) AS total FROM Students_query \
+    query = "SELECT COUNT(*) AS total, query FROM Students_query \
         WHERE FK_challenge_id_number = id_desafio AND FK_student_nick != 'test_student'\
         AND date_executed BETWEEN '2019-04-29 00:00:00' AND '2019-04-29 23:59:59'\
         GROUP BY query\
