@@ -57,3 +57,21 @@ def top_k_queries(challenge_id, k):
     conn.close()
     return data
     
+def total_queries(challenge_id, unique=False):
+    if unique:
+        query = "SELECT FK_student_nick, COUNT(DISTINCT query) AS total FROM Students_query \
+        WHERE FK_challenge_id_number = id_desafio AND FK_student_nick != 'test_student'\
+        AND date_executed BETWEEN '2019-04-29 00:00:00' AND '2019-04-29 23:59:59'\
+        GROUP BY FK_student_nick"
+    else:
+        query = "SELECT FK_student_nick, COUNT(*) as total FROM Students_query\
+            WHERE FK_challenge_id_number = id_desafio AND FK_student_nick != 'test_student'\
+            AND date_executed BETWEEN '2019-04-29 00:00:00' AND '2019-04-29 23:59:59'\
+            GROUP BY FK_student_nick"
+    query = query.replace('id_desafio', str(challenge_id))
+    conn = pymysql.connect(host='localhost', user='root',
+                       passwd='rotted',db='gonsa2')
+    data = pd.read_sql(query, conn)   
+    conn.close()
+    return data
+    
