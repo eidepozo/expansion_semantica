@@ -75,3 +75,15 @@ def total_queries(challenge_id, unique=False):
     conn.close()
     return data
     
+def terms_by_query(challenge_id):    
+    query = "SELECT date_executed, id_number,query \
+        FROM Students_query \
+        WHERE FK_challenge_id_number = 4 AND FK_student_nick != 'test_student' \
+        AND date_executed BETWEEN '2019-04-29 00:00:00' AND '2019-04-29 23:59:59' \
+        ORDER BY date_executed, FK_student_nick"
+    query = query.replace('id_desafio', str(challenge_id))
+    conn = pymysql.connect(host='localhost', user='root',
+                       passwd='rotted',db='gonsa2')
+    data = pd.read_sql(query, conn)   
+    conn.close()
+    return data
